@@ -40,7 +40,7 @@ if(empty($username_err) && empty($password_err)){
       $count = mysqli_num_rows($result);
           if($count == 1){
                $_SESSION['user'] = $row['username'];
-   header("location: ./attorney/index.php");
+   header("location: /attorney/index.php");
    exit();
 }else{
    echo"wrong credentials. Please try again.";
