@@ -32,7 +32,7 @@ if(empty($email) && empty($password)){
       // If result matched $myusername and $mypassword, table row must be 1 row
 
       if($count == 1) {
-         header("location: new_case.php");
+         header("location: /inet/attorney/customer_home.php");
       }else {
          echo "Your Login Name or Password is invalid";
       }

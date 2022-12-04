@@ -1,56 +1,37 @@
 <?php
+// Connect to the database
+$db = mysqli_connect('localhost', 'root', '', 'law');
 
-include ("db.php");
+$username = $password = $role = "";
+// Check if the user has submitted the login form
+if (isset($_POST['login'])) {
+  // Get the login information from the form
+  $username = mysqli_real_escape_string($db, $_POST['username']);
+  $password = mysqli_real_escape_string($db, $_POST['password']);
 
+  // Query the database to find the user with the provided username and password
+  $query = "SELECT * FROM login WHERE username='$username' AND password='$password'";
+  $result = mysqli_query($db, $query);
 
-$username = $password = $role ="";
-$username_err = $password_err = $role ="";
+  // If a user was found, set the session variables and redirect the user
+  if (mysqli_num_rows($result) === 1) {
+    $user = mysqli_fetch_assoc($result);
+    $_SESSION['logged_in'] = true;
+   //  $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_role'] = $user['email'];
 
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-
-$input_username=trim($_POST["username"]);
-if (empty($input_username)){
-  $username_err = "Please enter your username";
+    // Redirect the user to the appropriate page based on their role
+    if ($_SESSION['user_role'] === 'admin') {
+      // Redirect the user to the admin dashboard
+      header('Location: ./admin/index.php');
+      exit;
+    } else if ($_SESSION['user_role'] === 'user') {
+      // Redirect the user to the customer dashboard
+      header('Location: ./attorney/index.php');
+      exit;
+    }
+  }
 }
-
-$input_password=trim($_POST["password"]);
-if (empty($input_password)){
-  $password_err = "Please enter your Password";
-}
-
-if(empty($username_err) && empty($password_err)){
-   $username = mysqli_real_escape_string($link,$_POST['username']);
-   $password = mysqli_real_escape_string($link,($_POST['password']));
-
-   $sql = "SELECT * FROM login WHERE username = '$username' and password = '$password' and role='admin'";
-   $result = mysqli_query($link,$sql);
-   $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-
-   $count = mysqli_num_rows($result);
-
-       if($count == 1){
-   header("location: ./admin/index.php");
-   exit();
-    }else if($count !== 1){
-
-      $sql = "SELECT * FROM login WHERE username = '$username' and password = '$password' and role='user'";
-      $result = mysqli_query($link,$sql);
-      $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-
-      $true = mysqli_num_rows($result);
-          if($true == 1){
-               $_SESSION['user'] = $row['username'];
-   header("location: ./attorney/index.php");
-   exit();
-}else{
-   echo"wrong credentials. Please try again.";
-}
-            }
- }
-
-}
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

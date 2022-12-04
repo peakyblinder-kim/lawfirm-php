@@ -1,118 +1,20 @@
 <?php
-// Include config file
+// Include config files
+session_start();
 require_once "config.php";
 
 // Define variables and initialize with empty values
 $username = $phone_no = $email = $role = $password = $cpassword = $employee_id = $licence ="";
 $username_err = $phone_no_err = $email_err = $role = $password_err = $cpassword_err = $employee_id_err = $licence_err ="";
 
-// Processing form data when form is submitted
-if(isset($_POST["id"]) && !empty($_POST["id"])){
-    // Get hidden input value
-    $id = $_POST["id"];
-
-    // Validate name
-    $input_username = trim($_POST["username"]);
-     if(empty($input_username)){
-         $username_err = "Please enter a username.";
-     } else{
-         $username = $input_username;
-     }
-
-     $input_phone_no = trim($_POST["phone_no"]);
-     if(empty($input_phone_no)){
-         $phone_no_err = "Please enter your licence.";
-     } else{
-         $phone_no = $input_phone_no;
-     }
-
-    // Validate address address
-    $input_email = trim($_POST["email"]);
-     if(empty($input_email)){
-         $email_err = "Please enter an email.";
-     } else{
-         $email = $input_email;
-     }
-
-     $input_role = trim($_POST["role"]);
-     if(empty($input_role)){
-         $role_err = "Please enter an email.";
-     } else{
-         $role= $input_role;
-     }
-    // Validate salary
-    $input_password = trim($_POST["password"]);
-   if(empty($input_password)){
-       $password_err = "Please enter your Staff id.";
-   } else{
-       $password = $input_password;
-   }
-
-   $input_cpassword = trim($_POST["cpassword"]);
-   if(empty($input_cpassword)){
-       $cpassword_err = "Please confirm password";
-   } else {
-       $cpassword= $input_cpassword;
-   }
-   $input_employee_id = trim($_POST["employee_id"]);
-   if(empty($input_employee_id)){
-       $employee_id_err = "Please enter your licence.";
-   } else{
-       $employee_id = $input_employee_id;
-   }
-
-   $input_licence = trim($_POST["licence"]);
-   if(empty($input_licence)){
-       $licence_err = "Please enter your licence.";
-   } else{
-       $licence = $input_licence;
-   }
-
-
-    // Check input errors before inserting in database
-    if(empty($username_err) && empty($phone_no_err) && empty($email_err) && empty($password_err) && empty($cpassword_err)&& empty($employee_id_err) && empty($licence_err)){
-        // Prepare an update statement
-
-        $sql = "UPDATE lawyers SET username=?, phone_no=?, email=?, role=?, password=?, employee_id=?, licence=? WHERE id=?";
-
-        if($stmt = mysqli_prepare($link, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssssssi", $param_username, $param_phone_no, $param_email, $param_role, $param_password, $param_employee_id, $param_licence, $param_id);
-
-            // Set parameters
-            $param_username = $username;
-            $param_phone_no = $phone_no;
-            $param_email = $email;
-            $param_role=$role;
-            $param_password = md5($password);
-            $param_employee_id = $employee_id;
-            $param_licence = $licence;
-            $param_id = $id;
-
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Records updated successfully. Redirect to landing page
-                header("location: index.php");
-                exit();
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-        }
-
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
-
-    // Close connection
-    mysqli_close($link);
-} else{
     // Check existence of id parameter before processing further
-    if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
-        // Get URL parameter
-        $id =  trim($_GET["id"]);
+    // if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+    //     // Get URL parameter
+    //     $id =  trim($_GET["id"]);
+    if (isset($_SESSION['user_role'])) {
 
         // Prepare a select statement
-        $sql = "SELECT * FROM lawyers WHERE id = ?";
+        $sql = "SELECT * FROM login WHERE  email='" . $_SESSION['user_role'] . "'";
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "i", $param_id);
@@ -158,7 +60,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         header("location: error.php");
         exit();
     }
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

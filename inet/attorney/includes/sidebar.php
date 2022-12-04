@@ -1,17 +1,4 @@
-        <?php
-        include 'config.php';
-        session_start();
-        if ($_SESSION['user']){
-        $query = "SELECT name, phone, email, tcase, role, court, description FROM cases WHERE username ='".$_SESSION['user']."'";
-        $result = $link->query($query);
-        }else{
-           $error="Wrong login Details";
-           header("Location: ../kenya/login.php");
-        }
-        ?>
-        session_start();
-        $query = "SELECT *FROM lawyers WHERE username = '".$_SESSION['user']."'";
-        ?>
+
         <!-- Main Sidebar Container -->
          <aside class="main-sidebar sidebar-light-primary elevation-1" >
                         <!-- Brand Logo -->

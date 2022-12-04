@@ -1,5 +1,10 @@
 <?php
-include 'config.php';
+session_start();
+if (isset($_SESSION['user_role'])) {
+
+   // Prepare a select statement
+   $sql = "SELECT * FROM login WHERE  email='" . $_SESSION['user_role'] . "'";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
